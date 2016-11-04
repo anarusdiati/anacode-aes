@@ -1,5 +1,5 @@
 Referensi:
-</br>	Video dari channel YouTube "What's a Creel"
+</br>	Video dari channel YouTube "<a href="https://www.youtube.com/user/WhatsACreel">What's a Creel</a>"
 	
 Keterangan:
 </br>	1. Kode yang ada di dalam file ini hanya bekerja untuk AES-128 bit saja.
@@ -16,7 +16,7 @@ using namespace std;
 
 Pada awal program ini, kami mendeklarasikan beberapa variabel yang isinya berupa matriks (menggunakan array) serta beberapa fungsi yang ada dalam algoritma AES.
 
-Berikut ini adalah deklarasi variabel <b>sbox</b> berupa array dengan tipe data <b>unsigned char</b> dan panjangnya <b>256</b> bit. Isi dari tabel <b>sbox</b> ini kami peroleh dari (link). Variabel <b>sbox</b> digunakan untuk memetakan proses substitusi byte yang ada pada fungsi <b>SubByte</b>.
+Berikut ini adalah deklarasi variabel <b>sbox</b> berupa array dengan tipe data <b>unsigned char</b> dan panjangnya <b>256</b> bit. Isi dari tabel <b>sbox</b> ini kami peroleh dari (link). Variabel <b>sbox</b> digunakan untuk memetakan proses substitusi byte yang ada pada fungsi <b>SubByte()</b>.
 ```c++
 unsigned char sbox[256] = {
     0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76,
