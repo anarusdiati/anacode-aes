@@ -1,5 +1,6 @@
 <b>Referensi:</b>
 </br>	Video dari channel YouTube "<a href="https://www.youtube.com/user/WhatsACreel">What's a Creel</a>"
+</br>   <a href="http://www.formaestudio.com/rijndaelinspector/archivos/Rijndael_Animation_v4_eng.swf">Animation of Rijndael - Forma Estudio</a> (flash)
 	
 <b>Keterangan:</b>
 </br>	1. Kode yang ada di dalam file ini hanya bekerja untuk <b>AES-128 bit</b> saja.
@@ -17,7 +18,7 @@ using namespace std;
 
 Pada awal program ini, kami mendeklarasikan beberapa variabel yang isinya berupa matriks (menggunakan array) serta beberapa fungsi yang ada dalam algoritma AES.
 
-Berikut ini adalah deklarasi variabel <b>sbox</b> berupa array dengan tipe data <b>unsigned char</b> dan panjangnya <b>256</b> bit. Isi dari tabel <b>sbox</b> ini kami peroleh dari (link). Variabel <b>sbox</b> digunakan untuk memetakan proses substitusi byte yang ada pada fungsi <b>SubByte()</b>.
+Berikut ini adalah deklarasi variabel <b>sbox</b> berupa array dengan tipe data <b>unsigned char</b> dan panjangnya <b>256</b> bit. Isi dari tabel <b>sbox</b> ini kami peroleh dari Wikipedia. Variabel <b>sbox</b> digunakan untuk memetakan proses substitusi byte yang ada pada fungsi <b>SubByte()</b>.
 ```c++
 unsigned char sbox[256] = {
     0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76,
@@ -39,7 +40,7 @@ unsigned char sbox[256] = {
 };
 ```
 
-Variabel <b>rcon</b> berupa array dengan tipe data <b>unsigned char</b> dan panjangnya <b>256</b> bit. Isi dari tabel <b>rcon</b> ini kami peroleh dari (link). Variabel <b>rcon</b> digunakan untuk ... .
+Variabel <b>rcon</b> berupa array dengan tipe data <b>unsigned char</b> dan panjangnya <b>256</b> bit. Isi dari tabel <b>rcon</b> ini kami peroleh dari Wikipedia. Variabel <b>rcon</b> digunakan untuk ... .
 ```
 unsigned char rcon[256] = {
     0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a, 
@@ -61,7 +62,7 @@ unsigned char rcon[256] = {
 };
 ```
 
-Variabel "<b>multiple2</b>" dan "<b>multiple3</b>" digunakan untuk memudahkan dalam perkalian matriks dengan Galois Field. Caranya yaitu dengan memetakan matriks ke dalam tabel sesuai dengan indeks matriks. Kedua variabel ini memiliki tipe data <b>unsigned char</b> dan panjangnya <b>256</b> bit. Isi dari tabel "<b>multiple2</b>" dan "<b>multiple3</b>" kami peroleh dari (link).
+Variabel "<b>multiple2</b>" dan "<b>multiple3</b>" digunakan untuk memudahkan dalam perkalian matriks dengan Galois Field. Caranya yaitu dengan memetakan matriks ke dalam tabel sesuai dengan indeks matriks. Kedua variabel ini memiliki tipe data <b>unsigned char</b> dan panjangnya <b>256</b> bit. Isi dari tabel "<b>multiple2</b>" dan "<b>multiple3</b>" kami peroleh dari Wikipedia.
 ```c++
 unsigned char multiple2[256] = {
     0x00,0x02,0x04,0x06,0x08,0x0a,0x0c,0x0e,0x10,0x12,0x14,0x16,0x18,0x1a,0x1c,0x1e,
