@@ -140,7 +140,7 @@ void keyexpand(unsigned char* keylama, unsigned char* keybaru){
 			// jika tidak 16 bit, maka sekali di xor aja
 			temp[i] = keybaru[i + bytesgen - 4];
 			
-			//keycore setiap 16 byte sekali
+			// keycore setiap 16 byte sekali
 			if (bytesgen%16 == 0){
 				keycore(temp, banyakrcon);
 				banyakrcon++;
@@ -198,8 +198,8 @@ void ShiftRows(unsigned char* a){
 	}
 }
 ```
-Berikut ini adalah matriks Galois:
-```c++
+Berikut ini adalah matriks Galois: (hanya menunjukkan, bukan bagian dari program)
+```
 Galois[16] = {
 	2,3,1,1,
 	1,2,3,1,
