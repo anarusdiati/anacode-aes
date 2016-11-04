@@ -1,7 +1,7 @@
-Referensi:
+<b>Referensi:</b>
 </br>	Video dari channel YouTube "<a href="https://www.youtube.com/user/WhatsACreel">What's a Creel</a>"
 	
-Keterangan:
+<b>Keterangan:</b>
 </br>	1. Kode yang ada di dalam file ini hanya bekerja untuk AES-128 bit saja.
 </br>   2. Plaintext hanya bisa diubah di dalam variabel yang ada di fungsi main, belum menerima input dari user yang dimasukkan melalui keyboard. Jadi, jika ingin mengenkripsi plaintext yang lain, maka harus mengubah isi variable plaintext yang ada di fungsi main.
 </br>	3. Key hanya bisa diubah di dalam variabel yang ada di fungsi main, belum menerima input dari user yang dimasukkan melalui keyboard. Jadi, jika ingin mengganti key yang lain, maka harus mengubah isi variable key yang ada di fungsi main. 
