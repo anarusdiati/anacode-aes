@@ -101,7 +101,7 @@ unsigned char multiple3[256] = {
 };
 ```
 
-Fungsi <b>keycore()</b> memproses input dari variabel <b>in</b> (input berupa plaintext) dan <b>i</b> (...). Fungsi ini digunakan untuk ekspansi key pada fungsi <b>keyexpand()</b>.
+Fungsi <b>keycore()</b> digunakan untuk ekspansi key pada fungsi <b>keyexpand()</b>.
 ```c++
 void keycore(unsigned char *in,unsigned char i){
 	unsigned char t = in[0];
@@ -136,7 +136,7 @@ void keyexpand(unsigned char* keylama, unsigned char* keybaru){
 	
 	while (bytesgen < 176){ // selama array key baru belum habis
 		for (int i=0 ;i<4 ;i++){
-			// Variabel temp menyimpan 4 bit key, jika setiap 16 bit sekali akan di rcon,s-box & rotate
+			// Variabel temp menyimpan 4 bit key, jika setiap 16 bit sekali akan di rcon, s-box & rotate
 			// jika tidak 16 bit, maka sekali di xor aja
 			temp[i] = keybaru[i + bytesgen - 4];
 			
@@ -146,7 +146,7 @@ void keyexpand(unsigned char* keylama, unsigned char* keybaru){
 				banyakrcon++;
 			}
 			
-			//keycore di dalam variabel temp di xor dengan 4 bit pertama dari key yang di-generate dan menjadi 4 bit terkahir dalam keybaru
+			// keycore di dalam variabel temp di xor dengan 4 bit pertama dari key yang di-generate dan menjadi 4 bit terkahir dalam keybaru
 			for (unsigned char b=0; b<4; b++){
 				keybaru[bytesgen] = keybaru[bytesgen-16] ^ temp[b];
 				bytesgen++;
@@ -156,17 +156,22 @@ void keyexpand(unsigned char* keylama, unsigned char* keybaru){
 }
 ```
 
-//Fungsi subByte; memetakan message atau plaintext kedalam s-box sesuai indexnya
+Fungsi <b>SubByte()</b> digunakan untuk memetakan plaintext ke dalam <b>sbox</b> sesuai indeksnya.
+```c++
 void SubByte(unsigned char* a){
 	for (int i=0; i<16; i++){
 		a[i] = sbox[a[i]];
 	}
 }
+```
 
+Fungsi <b>ShiftRows()</b> digunakan untuk menggeser baris-baris array state secara <i>wrapping</i>.
+```c++
 void ShiftRows(unsigned char* a){
 	unsigned char temp[16];
-	//karena digunakan array 1 dimensi, plaintext yang dudah melalui subByte di geser manual,
-	//hasil pergeseran dimasukan kedalam variabel temp 	
+	
+	// karena digunakan array 1 dimensi, plaintext yang sudah melalui SubByte digeser manual,
+	// hasil pergeseran dimasukan ke dalam variabel temp 	
 	temp[0] = a[0];
 	temp[1] = a[5];
 	temp[2] = a[10];
@@ -187,24 +192,30 @@ void ShiftRows(unsigned char* a){
 	temp[14] = a[6];
 	temp[15] = a[11];
 	
-	//setelah digeser, nilai yang baru dimasukan kembali kedalam variabel a
+	// setelah digeser, nilai yang baru dimasukkan kembali kedalam variabel a
 	for (int i=0; i<16; i++){
 		a[i] = temp [i];
 	}
 }
-
-/*Galois[16] ={
+```
+Berikut ini adalah matriks Galois:
+```c++
+Galois[16] = {
 	2,3,1,1,
 	1,2,3,1,
 	1,1,2,3,
-	3,1,1,2};*/
+	3,1,1,2};
+```
+
+Fungsi <b>MixColumn()</b> berfungsi untuk mengacak data di masing-masing kolom array state.
+```c++
 void MixColumn(unsigned char* a){
 	int i=0;
 	unsigned char Tm[16];
 	unsigned char t[16];
 	
-	//karena memakai array 1 dimensi dan dot product mengalikan matriks per kolom, 
-	//maka dibuat array baru yang diurut per kolom
+	// karena memakai array 1 dimensi dan dot product mengalikan matriks per kolom, 
+	// maka dibuat array baru yang diurutkan per kolom
 	t[0] = a[0];
 	t[1] = a[4];
 	t[2] = a[8];
@@ -247,32 +258,41 @@ void MixColumn(unsigned char* a){
 	Tm[14] = (t[12] ^ t[13] ^ multiple2[t[14]] ^ multiple3[t[15]]);
 	Tm[15] = (multiple3[t[12]] ^ t[13] ^ t[14] ^ multiple2[t[15]]);
 	
-	// Di sini hasil akhir dimasukan kembali ke dalam variabel a
+	// Di sini hasil akhir dimasukkan kembali ke dalam variabel a
 	for (int i=0; i<16 ; i++){
 		a[i] = Tm[i];
 	}
 }
+```
 
+Fungsi <b>AddRoundKey</b> berfungsi untuk meng-xor-kan state sekarang dengan round key.
+```c++
 void AddRoundKey(unsigned char* a,unsigned char* rk){
 	// Setelah plaintext masuk mixColumn kemudian di-xor dengan roundkey 
 	for (int i=0; i<16; i++){
 		a[i] ^= rk[i];
 	}
 }
+```
 
+Fungsi <b>encrypt()</b> berisi proses enkripsi pada algoritma AES.
+```c++
 void encrypt(unsigned char* text, unsigned char* key){
 	unsigned char a[16];
 	for (int i=0; i<16; i++){
 		a[i] = text[i];
 	}
 	
+	// karena kodingan ini baru bisa berjalan padaAES-128 bit,
+	// maka total keseluruhan ronde adalah 9 regular round + 1 final round
 	int round = 9;
 	
-	//mengekspansi key
+	// mengekspansi key dengan cara memanggil fungsi keyexpand() dan AddRoundKey()
 	unsigned char keybaru[176];
 	keyexpand(key, keybaru);
 	AddRoundKey(a,key);
 	
+	// proses perulangan 9 regular round
 	for (int i=0; i<=4; i++){
 		SubByte(a);
 		ShiftRows(a);
@@ -280,6 +300,8 @@ void encrypt(unsigned char* text, unsigned char* key){
 		AddRoundKey(a,keybaru+(16*(i+1)));
 	}
 	
+	// proses final round, yaitu ronde ke-10 (pada AES-128 bit)
+	// perbedaan dengan perulangan di atas adalah bahwa pada final round tidak terdapat pemanggilan fungsi MixColumn()
 	SubByte(a);
 	ShiftRows(a);
 	AddRoundKey(a,keybaru+160);
@@ -288,8 +310,11 @@ void encrypt(unsigned char* text, unsigned char* key){
 		text[i] = a[i];
 	}
 }
+```
 
-void toHex(unsigned char x){ // Fungsi untuk mengubah karakter ke heksadesimal
+Fungsi <b>toHex()</b> berfungsi untuk mengubah karakter ke heksadesimal.
+```c++
+void toHex(unsigned char x){
 	if(x/16<10){		
 		cout<<(char)((x/16)+'0');
 	}
@@ -303,13 +328,20 @@ void toHex(unsigned char x){ // Fungsi untuk mengubah karakter ke heksadesimal
 		cout<<(char)((x%16-10)+'A');
 	}
 }
+```
 
+Berikut ini adalah program utamanya, yaitu <b>main()</b>. Di bagian ini terdapat beberapa proses, yaitu: deklarasi isi variabel untuk plaintext (<b>text[]</b>) dan key (<b>key[16]</b>), padding untuk plaintext, pemanggilan fungsi enkripsi, serta mencetak output program.
+```c++
 int main(){
-	unsigned char text[] = "this is plaintext"; // Edit plaintext di sini
+	// Plaintext hanya bisa diubah di dalam variabel yang ada di fungsi main, belum menerima input dari user yang dimasukkan melalui keyboard. Jadi, jika ingin mengenkripsi plaintext yang lain, maka harus mengubah isi variable plaintext yang ada di fungsi main.
+	unsigned char text[] = "this is plaintext"; 
+	
+	// Key hanya bisa diubah di dalam variabel yang ada di fungsi main, belum menerima input dari user yang dimasukkan melalui keyboard. Jadi, jika ingin mengganti key yang lain, maka harus mengubah isi variable key yang ada di fungsi main. 
 	unsigned char key[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
-	
-	//buat padding teks kalau kurang dari 16
-	
+```
+
+Berikut ini adalah program untuk memberi <b>padding</b> pada teks yang diinputkan. Padding digunakan ketika panjang plaintext yang dimasukkan kurang atau lebih dari 16 bit.
+```c++
 	int panjangawal= sizeof(text);
 	int panjangteks = panjangawal;
 	
@@ -325,19 +357,28 @@ int main(){
 			panjangakhir[i] = text[i];
 		}
 	}
-	
-	//keyexpand(key,panjangakhir);
+```
+
+Setelah melalui proses <b>padding</b>, proses selanjutnya adalah ekspansi key yang sudah dideklarasikan di awal.
+```c++
 	for(int i=0;i<panjangteks;i+=16){
 		encrypt(panjangakhir+i,key);
 	}
-	
+```
+
+Kemudian, program untuk menampilkan output hasil enkripsi adalah sebagai berikut.
+```c++
 	cout<<endl<<"Terenkripsi: "<<endl;
 	
 	for (int i = 0; i<panjangteks; i++){
 		toHex(panjangakhir[i]);
 		cout<<" ";
 	}
+```
 
+Akhir dari program:
+```c++
 	_getch();
 	delete[] panjangakhir;
 }
+```
