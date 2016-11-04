@@ -3,12 +3,12 @@ Referensi:
 	
 Keterangan:
 </br>	1. Kode yang ada di dalam file ini hanya bekerja untuk AES-128 bit saja.
-</br> 2. Plaintext hanya bisa diubah di dalam variabel yang ada di fungsi main, belum menerima input dari user yang dimasukkan melalui keyboard. Jadi, jika ingin mengenkripsi plaintext yang lain, maka harus mengubah isi variable plaintext yang ada di fungsi main.
+</br>   2. Plaintext hanya bisa diubah di dalam variabel yang ada di fungsi main, belum menerima input dari user yang dimasukkan melalui keyboard. Jadi, jika ingin mengenkripsi plaintext yang lain, maka harus mengubah isi variable plaintext yang ada di fungsi main.
 </br>	3. Key hanya bisa diubah di dalam variabel yang ada di fungsi main, belum menerima input dari user yang dimasukkan melalui keyboard. Jadi, jika ingin mengganti key yang lain, maka harus mengubah isi variable key yang ada di fungsi main. 
 </br>	4. Kode yang ada di dalam file ini sudah bisa memberikan padding apabila panjang plaintext kurang atau lebih dari 16 bit.
 
-Program kami menggunakan dua library, yaitu <b>bits/stdc++.h</b> dan <b>conio.h</b></br>
-```
+Program kami menggunakan dua library, yaitu <b>bits/stdc++.h</b> dan <b>conio.h</b>. 
+```c++
 #include <bits/stdc++.h>
 #include <conio.h>
 using namespace std;
@@ -16,8 +16,8 @@ using namespace std;
 
 Pada awal program ini, kami mendeklarasikan beberapa variabel yang isinya berupa matriks (menggunakan array) serta beberapa fungsi yang ada dalam algoritma AES.
 
-Berikut ini adalah deklarasi variabel <b>sbox</b> berupa array dengan tipe data <b>unsigned char</b> dan panjangnya <b>256</b> bit. Isi dari tabel <b>sbox</b> ini kami peroleh dari (link).
-```
+Berikut ini adalah deklarasi variabel <b>sbox</b> berupa array dengan tipe data <b>unsigned char</b> dan panjangnya <b>256</b> bit. Isi dari tabel <b>sbox</b> ini kami peroleh dari (link). Variabel <b>sbox</b> digunakan untuk memetakan proses substitusi byte yang ada pada fungsi <b>SubByte</b>.
+```c++
 unsigned char sbox[256] = {
     0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76,
     0xCA, 0x82, 0xC9, 0x7D, 0xFA, 0x59, 0x47, 0xF0, 0xAD, 0xD4, 0xA2, 0xAF, 0x9C, 0xA4, 0x72, 0xC0,
@@ -38,6 +38,8 @@ unsigned char sbox[256] = {
 };
 ```
 
+Variabel <b>rcon</b> berupa array dengan tipe data <b>unsigned char</b> dan panjangnya <b>256</b> bit. Isi dari tabel <b>rcon</b> ini kami peroleh dari (link). Variabel <b>rcon</b> digunakan untuk ... .
+```
 unsigned char rcon[256] = {
     0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a, 
     0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39, 
@@ -56,9 +58,10 @@ unsigned char rcon[256] = {
     0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd, 
     0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d
 };
+```
 
-// Tabel "multiple2" dan "multiple3" digunakan untuk memudahkan dalam perkalian matriks dengan Galois Field. 
-// Caranya yaitu dengan memetakan matriks ke dalam tabel sesuai dengan indeks matriks.
+Variabel "<b>multiple2</b>" dan "<b>multiple3</b>" digunakan untuk memudahkan dalam perkalian matriks dengan Galois Field. Caranya yaitu dengan memetakan matriks ke dalam tabel sesuai dengan indeks matriks. Kedua variabel ini memiliki tipe data <b>unsigned char</b> dan panjangnya <b>256</b> bit. Isi dari tabel "<b>multiple2</b>" dan "<b>multiple3</b>" kami peroleh dari (link).
+```c++
 unsigned char multiple2[256] = {
     0x00,0x02,0x04,0x06,0x08,0x0a,0x0c,0x0e,0x10,0x12,0x14,0x16,0x18,0x1a,0x1c,0x1e,
 	0x20,0x22,0x24,0x26,0x28,0x2a,0x2c,0x2e,0x30,0x32,0x34,0x36,0x38,0x3a,0x3c,0x3e,
@@ -96,24 +99,27 @@ unsigned char multiple3[256] = {
 	0x3b,0x38,0x3d,0x3e,0x37,0x34,0x31,0x32,0x23,0x20,0x25,0x26,0x2f,0x2c,0x29,0x2a,
 	0x0b,0x08,0x0d,0x0e,0x07,0x04,0x01,0x02,0x13,0x10,0x15,0x16,0x1f,0x1c,0x19,0x1a
 };
+```
 
-//fungsi ini digunakan untuk ekspansi key pada fungsi keyexpand
+Fungsi <b>keycore</b> memproses input dari variabel <b>in</b> (input berupa plaintext) dan <b>i</b> (...). Fungsi ini digunakan untuk ekspansi key pada fungsi <b>keyexpand</b>.
+```c++
 void keycore(unsigned char *in,unsigned char i){
 	unsigned char t = in[0];
 	
-	//mengambil 4 bit dari key dan merotasi atau menggeser ke kiri 1 bit
+	// Mengambil 4 bit dari key dan merotasi atau menggeser ke kiri sebanyak 1 bit
 	for (i=0; i<3; i++){
 		in[i] = in[i+1];
 	}
 	in[3] = t;
 	
-	//4 bit dari key tadi dipetakan kedalam sesuai dengan indeksnya
+	// 4 bit dari key tadi kemudian dipetakan ke dalam sesuai dengan indeksnya
 	for (i=0; i<4; i++){
 		in[i] = rcon[in[i]];
 	}
 		
 	//in[0] ^= rcon[i];
 }
+```
 
 // Keyexpand digunakan untuk men-generate key baru untuk setiap round
 void keyexpand(unsigned char* keylama,unsigned char* keybaru){
