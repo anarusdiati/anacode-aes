@@ -101,7 +101,7 @@ unsigned char multiple3[256] = {
 };
 ```
 
-Fungsi <b>keycore</b> memproses input dari variabel <b>in</b> (input berupa plaintext) dan <b>i</b> (...). Fungsi ini digunakan untuk ekspansi key pada fungsi <b>keyexpand</b>.
+Fungsi <b>keycore()</b> memproses input dari variabel <b>in</b> (input berupa plaintext) dan <b>i</b> (...). Fungsi ini digunakan untuk ekspansi key pada fungsi <b>keyexpand()</b>.
 ```c++
 void keycore(unsigned char *in,unsigned char i){
 	unsigned char t = in[0];
@@ -121,15 +121,16 @@ void keycore(unsigned char *in,unsigned char i){
 }
 ```
 
-// Keyexpand digunakan untuk men-generate key baru untuk setiap round
-void keyexpand(unsigned char* keylama,unsigned char* keybaru){
+Fungsi <b>keyexpand()</b> memproses input dari variabel <b>keylama</b> dan <b>keybaru</b>. Fungsi <b>keyexpand()</b> digunakan untuk membangkitkan (<i>generating</i>) key baru untuk setiap round.
+```c++
+void keyexpand(unsigned char* keylama, unsigned char* keybaru){
 	// 16 bit pertama adalah key yang diinputkan/awal
 	// keyawal dimasukan kedalam variabel baru; keybaru yang akan diekspansi
 	for(int i=0;i< 16;i++){
 		keybaru[i] = keylama[i];
 	}
 	
-	int bytesgen= 16;
+	int bytesgen = 16;
 	int banyakrcon = 1; // iterasi rcon mulai dari 1
 	unsigned char temp[4]; // variabel sementara untuk menyimpan keycore (4 bit dari key)
 	
@@ -153,6 +154,7 @@ void keyexpand(unsigned char* keylama,unsigned char* keybaru){
 		}
 	}
 }
+```
 
 //Fungsi subByte; memetakan message atau plaintext kedalam s-box sesuai indexnya
 void SubByte(unsigned char* a){
